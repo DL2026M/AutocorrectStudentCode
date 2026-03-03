@@ -8,7 +8,7 @@ import java.io.IOException;
  * A command-line tool to suggest similar words when given one not in the dictionary.
  * </p>
  * @author Zach Blick
- * @author YOUR NAME HERE
+ * @author David Lutch
  */
 public class Autocorrect {
 
@@ -17,9 +17,13 @@ public class Autocorrect {
      * @param words The dictionary of acceptable words.
      * @param threshold The maximum number of edits a suggestion can have.
      */
+    private String[] words;
+    private int threshold;
     public Autocorrect(String[] words, int threshold) {
-
+      this.words = words;
+      this.threshold = threshold;
     }
+
 
     /**
      * Runs a test from the tester file, AutocorrectTester.
@@ -28,8 +32,14 @@ public class Autocorrect {
      * to threshold, sorted by edit distnace, then sorted alphabetically.
      */
     public String[] runTest(String typed) {
-
+        int[][] editD = new int[][];
+        for (int i = 0; i < words.length; i++) {
+            editD[words[i]][typed] = editDistance(words[i], typed);
+        }
         return new String[0];
+    }
+    public int editDistance(String dictionaryWord, String typedWord) {
+        if
     }
 
 

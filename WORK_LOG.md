@@ -1,4 +1,4 @@
-Name: YOUR NAME HERE
+Name: David Lutch
 
 | Date    |  Time  |                                     Update |
 |:--------|:------:|-------------------------------------------:|
