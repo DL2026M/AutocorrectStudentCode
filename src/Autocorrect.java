@@ -1,9 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Autocorrect
@@ -15,6 +13,7 @@ import java.util.Map;
  */
 public class Autocorrect {
 
+
     private String[] words;
     private int threshold;
     public Autocorrect(String[] words, int threshold) {
@@ -22,7 +21,36 @@ public class Autocorrect {
         this.threshold = threshold;
     }
 
+    public static void main(String[] args) {
+        String[] dictionary = loadDictionary("large");
+        Autocorrect wholeTest = new Autocorrect(dictionary, 2);
+       // get it so it continuously prompts the user
+        String[] words = wholeTest.runTest("algarthm");
+
+        for (String word : words) {
+            System.out.println(word);
+        }
+        String test;
+        test = wholeTest.getInput();
+
+    }
+
+    public String getInput() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter a word:");
+        String wordEntered = scanner.nextLine();
+        int index = Arrays.binarySearch(words, wordEntered);
+        if (index >= 0) {
+            return "\n'" + wordEntered + "' is a word!";
+        }
+
+        return "hi";
+    }
+
+
+
     public String[] runTest(String typed) {
+
 
         ArrayList<WordDistancePair> sorted = new ArrayList<WordDistancePair>();
         ArrayList<String> returnedWords = new ArrayList<String>();
@@ -52,6 +80,7 @@ public class Autocorrect {
         for (int i = 0; i < returnedWords.size(); i++) {
             returnedWordsArray[i] = returnedWords.get(i);
         }
+
 
         return returnedWordsArray;
     }
