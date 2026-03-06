@@ -12,8 +12,6 @@ import java.util.*;
  * @author David Lutch
  */
 public class Autocorrect {
-
-
     private String[] words;
     private int threshold;
     public Autocorrect(String[] words, int threshold) {
@@ -22,35 +20,43 @@ public class Autocorrect {
     }
 
     public static void main(String[] args) {
-        String[] dictionary = loadDictionary("large");
-        Autocorrect wholeTest = new Autocorrect(dictionary, 2);
-       // get it so it continuously prompts the user
-        String[] words = wholeTest.runTest("algarthm");
+        // Continuously prompts the user
+        while (true) {
+            String[] dictionary = loadDictionary("large");
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Please enter a word (or type quit to end the program): ");
+            String wordEntered = scanner.nextLine();
+            if  (wordEntered.equals("quit")) {
+                break;
+            }
+            System.out.print("Enter a threshold: ");
+            int thresholdGiven = scanner.nextInt();
 
-        for (String word : words) {
-            System.out.println(word);
+            Autocorrect wholeTest = new Autocorrect(dictionary, thresholdGiven);
+
+            String validWordTester = wholeTest.getInput(wordEntered);
+            System.out.println(validWordTester);
+            // wholeTest will only have this if the user didn't enter a valid word
+            if (validWordTester.contains("Please enter a word (or type quit to end the program): ")) {
+                String[] words = wholeTest.runTest(wordEntered);
+                for (String word : words) {
+                    System.out.println(word);
+                }
+            }
         }
-        String test;
-        test = wholeTest.getInput();
-
     }
 
-    public String getInput() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter a word:");
-        String wordEntered = scanner.nextLine();
-        int index = Arrays.binarySearch(words, wordEntered);
+    public String getInput(String typedWord) {
+        int index = Arrays.binarySearch(words, typedWord);
         if (index >= 0) {
-            return "\n'" + wordEntered + "' is a word!";
+            return "\n'" + typedWord + "' is a word!";
         }
-
-        return "hi";
+        else {
+            return "\nPlease enter a word (or type quit to end the program): ";
+        }
     }
-
-
 
     public String[] runTest(String typed) {
-
 
         ArrayList<WordDistancePair> sorted = new ArrayList<WordDistancePair>();
         ArrayList<String> returnedWords = new ArrayList<String>();
@@ -80,7 +86,6 @@ public class Autocorrect {
         for (int i = 0; i < returnedWords.size(); i++) {
             returnedWordsArray[i] = returnedWords.get(i);
         }
-
 
         return returnedWordsArray;
     }
