@@ -15,31 +15,17 @@ import java.util.Map;
  */
 public class Autocorrect {
 
-    /**
-     * Constucts an instance of the Autocorrect class.
-     * @param words The dictionary of acceptable words.
-     * @param threshold The maximum number of edits a suggestion can have.
-     */
     private String[] words;
     private int threshold;
     public Autocorrect(String[] words, int threshold) {
-      this.words = words;
-      this.threshold = threshold;
+        this.words = words;
+        this.threshold = threshold;
     }
 
-
-    /**
-     * Runs a test from the tester file, AutocorrectTester.
-     * @param typed The (potentially) misspelled word, provided by the user.
-     * @return An array of all dictionary words with an edit distance less than or equal
-     * to threshold, sorted by edit distnace, then sorted alphabetically.
-     */
     public String[] runTest(String typed) {
 
-
         ArrayList<WordDistancePair> sorted = new ArrayList<WordDistancePair>();
-
-
+        ArrayList<String> returnedWords = new ArrayList<String>();
         // Two 1D Arrays where one contains is the word in the dictionary and the other one contains the edit distance
         // of that word in the dictionary to the typed word
         for (int i = 0; i < words.length; i++) {
@@ -52,15 +38,24 @@ public class Autocorrect {
         // Sorts by edit distance
         sorted.sort(Comparator.comparingInt(WordDistancePair::getEditDistance));
 
+        // Adds every word that is less than or equal to the distance away of the typed word to an arraylist
         for (int i = 0; i < sorted.size(); i++) {
-            sorted.get()
+            if (threshold >= sorted.get(i).getEditDistance()) {
+                // Using an arraylist to avoiding having a huge 1D array that is mostly empty since we don't know how
+                // many words fit the criteria
+                returnedWords.add(sorted.get(i).getWord());
+            }
         }
 
-        return new String[0];
+        // Converting the arraylist into a 1D array
+        String[] returnedWordsArray = new String[returnedWords.size()];
+        for (int i = 0; i < returnedWords.size(); i++) {
+            returnedWordsArray[i] = returnedWords.get(i);
+        }
+
+        return returnedWordsArray;
     }
     public int editDistance(String dictionaryWord, String typedWord) {
-
-
         final int DICTIONARYWORD_LENGTH = dictionaryWord.length();
         final int TYPEDWORD_LENGTH = typedWord.length();
         int[][] tabulation = new int[DICTIONARYWORD_LENGTH + 1][TYPEDWORD_LENGTH + 1];
@@ -73,13 +68,14 @@ public class Autocorrect {
         for (int h = 0; h <= TYPEDWORD_LENGTH; h++) {
             tabulation[0][h] = h;
         }
-
+        // Tabulation
         for (int i = 1; i <= DICTIONARYWORD_LENGTH; i++) {
             for (int j = 1; j <= TYPEDWORD_LENGTH; j++) {
                 // Checks to see if the last letter on each string is the same
                 if (dictionaryWord.charAt(i - 1) == typedWord.charAt(j - 1)) {
                     tabulation[i][j] = tabulation[i - 1][j - 1];
                 }
+                // Checks to see if the minimum solution is using substitution, deletion, or addition
                 else {
                     tabulation[i][j] = Math.min(tabulation[i - 1][j], Math.min(tabulation[i][j - 1], tabulation[i - 1][j - 1])) + 1;
                 }
@@ -87,7 +83,6 @@ public class Autocorrect {
         }
         return tabulation[DICTIONARYWORD_LENGTH][TYPEDWORD_LENGTH];
     }
-
 
     /**
      * Loads a dictionary of words from the provided textfiles in the dictionaries directory.
