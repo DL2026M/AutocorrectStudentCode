@@ -29,6 +29,23 @@ public class Autocorrect {
             if  (wordEntered.equals("quit")) {
                 break;
             }
+            int editDistanceRatio = wordEntered.length();
+            if (wordEntered.length() > 4 && wordEntered.length() < 8) {
+                editDistanceRatio = 3;
+            }
+            if (wordEntered.length() < 6) {
+                editDistanceRatio = 4;
+            }
+            if (wordEntered.length() <= 2) {
+                editDistanceRatio = 1;
+            }
+            if (wordEntered.length() == 3) {
+                editDistanceRatio = 2;
+            }
+
+            // TO DO FOR DAVID
+            // Get rid of the threshold thing (i should put in the length ratio of that ini the threshold)
+            // do length matching (like a ratio of lengths to find all the edit distances away (so a 13 letter word has a couple edit distance away by length compared to a 3 letter word that should only have 1 edit distance away
             System.out.print("Enter a threshold: ");
             int thresholdGiven = scanner.nextInt();
 
