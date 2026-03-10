@@ -30,34 +30,30 @@ public class Autocorrect {
                 break;
             }
             int editDistanceRatio = wordEntered.length();
-            if (wordEntered.length() > 4 && wordEntered.length() < 8) {
+            if (wordEntered.length() >= 4 && wordEntered.length() <= 8) {
                 editDistanceRatio = 3;
             }
-            if (wordEntered.length() < 6) {
+            if (wordEntered.length() > 8) {
                 editDistanceRatio = 4;
-            }
-            if (wordEntered.length() <= 2) {
-                editDistanceRatio = 1;
             }
             if (wordEntered.length() == 3) {
                 editDistanceRatio = 2;
             }
+            if (wordEntered.length() <= 2) {
+                editDistanceRatio = 1;
+            }
 
-            // TO DO FOR DAVID
-            // Get rid of the threshold thing (i should put in the length ratio of that ini the threshold)
-            // do length matching (like a ratio of lengths to find all the edit distances away (so a 13 letter word has a couple edit distance away by length compared to a 3 letter word that should only have 1 edit distance away
-            System.out.print("Enter a threshold: ");
-            int thresholdGiven = scanner.nextInt();
-
-            Autocorrect wholeTest = new Autocorrect(dictionary, thresholdGiven);
+            Autocorrect wholeTest = new Autocorrect(dictionary, editDistanceRatio);
 
             String validWordTester = wholeTest.getInput(wordEntered);
             System.out.println(validWordTester);
             // wholeTest will only have this if the user didn't enter a valid word
             if (validWordTester.contains("Please enter a word (or type quit to end the program): ")) {
                 String[] words = wholeTest.runTest(wordEntered);
-                for (String word : words) {
-                    System.out.println(word);
+
+                // Prints the top 3 most likely words that the user meant
+                for (int i = 0; i < 3; i++) {
+                    System.out.println(words[i]);
                 }
             }
         }
