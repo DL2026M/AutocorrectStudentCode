@@ -12,8 +12,9 @@ import java.util.*;
  * @author David Lutch
  */
 public class Autocorrect {
-    private String[] words;
-    private int threshold;
+
+    private static String[] words;
+    private static int threshold;
     public Autocorrect(String[] words, int threshold) {
         this.words = words;
         this.threshold = threshold;
@@ -21,6 +22,7 @@ public class Autocorrect {
 
     public static void main(String[] args) {
         // Continuously prompts the user
+        Autocorrect wholeTest = new Autocorrect(words, threshold);
         while (true) {
             String[] dictionary = loadDictionary("large");
             Scanner scanner = new Scanner(System.in);
@@ -29,44 +31,46 @@ public class Autocorrect {
             if  (wordEntered.equals("quit")) {
                 break;
             }
-            int editDistanceRatio = wordEntered.length();
             if (wordEntered.length() >= 4 && wordEntered.length() <= 8) {
-                editDistanceRatio = 3;
+                threshold = 3;
             }
             if (wordEntered.length() > 8) {
-                editDistanceRatio = 4;
+                threshold = 4;
             }
             if (wordEntered.length() == 3) {
-                editDistanceRatio = 2;
+                threshold = 2;
             }
             if (wordEntered.length() <= 2) {
-                editDistanceRatio = 1;
+                threshold = 1;
             }
 
-            Autocorrect wholeTest = new Autocorrect(dictionary, editDistanceRatio);
+            wholeTest = new Autocorrect(dictionary, threshold);
 
-            String validWordTester = wholeTest.getInput(wordEntered);
-            System.out.println(validWordTester);
-            // wholeTest will only have this if the user didn't enter a valid word
-            if (validWordTester.contains("Please enter a word (or type quit to end the program): ")) {
+            boolean validWordTester = wholeTest.isValidWord(wordEntered);
+            if (validWordTester) {
+                System.out.println(wordEntered + "' is a word!" + '\n');
+            }
+            if (!validWordTester) {
                 String[] words = wholeTest.runTest(wordEntered);
-
-                // Prints the top 3 most likely words that the user meant
-                for (int i = 0; i < 3; i++) {
-                    System.out.println(words[i]);
+                // Prints the top 3 most likely words that the user meant (or all of them if less than 3 words)
+                if (words.length <= 3) {
+                    for (int i = 0; i < words.length; i++) {
+                        System.out.println(words[i]);
+                    }
                 }
+                else {
+                    for  (int i = 0; i < 3; i++) {
+                        System.out.println(words[i]);
+                    }
+                }
+                System.out.println("");
             }
         }
     }
 
-    public String getInput(String typedWord) {
+    public boolean isValidWord(String typedWord) {
         int index = Arrays.binarySearch(words, typedWord);
-        if (index >= 0) {
-            return "\n'" + typedWord + "' is a word!";
-        }
-        else {
-            return "\nPlease enter a word (or type quit to end the program): ";
-        }
+        return index >= 0;
     }
 
     public String[] runTest(String typed) {
