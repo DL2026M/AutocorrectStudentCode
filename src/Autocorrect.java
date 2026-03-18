@@ -77,8 +77,7 @@ public class Autocorrect {
 
         ArrayList<WordDistancePair> sorted = new ArrayList<WordDistancePair>();
         ArrayList<String> returnedWords = new ArrayList<String>();
-        // Two 1D Arrays where one contains is the word in the dictionary and the other one contains the edit distance
-        // of that word in the dictionary to the typed word
+
         for (int i = 0; i < words.length; i++) {
             int distance = editDistance(words[i], typed);
             WordDistancePair pair = new WordDistancePair(words[i], distance);
